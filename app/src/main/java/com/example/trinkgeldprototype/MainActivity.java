@@ -284,7 +284,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
         discoverableIntent.putExtra(myAdapter.EXTRA_DISCOVERABLE_DURATION,300);
         startActivity(discoverableIntent);
-
+        mBluetoothConnection = new BluetoothConnectionService(MainActivity.this);
         IntentFilter filter = new IntentFilter(myAdapter.ACTION_SCAN_MODE_CHANGED);
         registerReceiver(mBroadcastReciver2,filter);
     }
