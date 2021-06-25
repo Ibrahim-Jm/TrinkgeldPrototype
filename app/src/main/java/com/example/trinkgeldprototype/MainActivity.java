@@ -17,12 +17,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+
 import java.util.Set;
+import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
@@ -31,6 +36,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private TextView discoverDisplay;
     private TextView mBondStateView;
     private TextView mBondStateView2;
+    Button btnSend;
+    ArrayList<BluetoothDevice> s = new ArrayList<>();
+    BluetoothConnectionService mBluetoothConnection;
+    EditText etSend;
+    private static final UUID MY_UUID_INSECURE = UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
+    BluetoothDevice mBTDevice;
+
+
     public ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
     public DeviceListAdapter mDeviceListAdapter;
     ListView IvNewDevices;
@@ -150,12 +163,39 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mBluetoothStatus = (TextView)findViewById(R.id.StateView);
         discoverDisplay = (TextView)findViewById(R.id.discoverablty);
         IvNewDevices.setOnItemClickListener(MainActivity.this);
+
+        btnSend = (Button) findViewById(R.id.btnSend);
+        etSend = (EditText) findViewById(R.id.editText);
+
+
         //discoverDisplay=(findViewById(R.id.textView2));
         IntentFilter filter2 = new IntentFilter(myAdapter.ACTION_SCAN_MODE_CHANGED);
         registerReceiver(mBroadcastReciver2,filter2);
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+
+        btnSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                byte[] bytes = etSend.getText().toString().getBytes(Charset.defaultCharset());
+                mBluetoothConnection.write(bytes);
+            }
+        });
     }
+
+    public void startConnection (BluetoothDevice device){
+        startBTConnection(device,MY_UUID_INSECURE);
+    }
+
+    public void startBTConnection(BluetoothDevice device, UUID uuid){
+        mBondStateView.setText("Initializing RFCOM Connection");
+
+        mBluetoothConnection.startClient(device,uuid);
+
+    }
+
+
+
 
     public void btnDiscover(View v){
         if (!myAdapter.isEnabled()){
@@ -249,8 +289,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         registerReceiver(mBroadcastReciver2,filter);
     }
     public void getPaired(View v){
+        Set<BluetoothDevice> pairedDevices = myAdapter.getBondedDevices();
 
 
+        for(BluetoothDevice bt : pairedDevices)
+            s.add(bt);
+        mDeviceListAdapter = new DeviceListAdapter(this, R.layout.device_adapter_view, s);
+        IvNewDevices.setAdapter(mDeviceListAdapter);
     }
 
 
@@ -261,9 +306,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         String deviceAddress=mBTDevices.get(position).getAddress();
         if (Build.VERSION.SDK_INT>Build.VERSION_CODES.JELLY_BEAN_MR2){
             mBondStateView2.setText("Bonding to "+deviceName+": "+deviceAddress);
-            mBTDevices.get(position).createBond();
+            if (s.contains(mBTDevices.get(position))){
+                mBondStateView2.setText("Already Bonded");
+            }else{
+                mBTDevices.get(position).createBond();
+            }
+
+            mBTDevice=mBTDevices.get(position);
+            mBluetoothConnection = new BluetoothConnectionService(MainActivity.this);
+            startConnection(mBTDevice);
         }
         IntentFilter filter = new IntentFilter(myAdapter.ACTION_SCAN_MODE_CHANGED);
         registerReceiver(mBroadcastReciver2,filter);
+
     }
 }

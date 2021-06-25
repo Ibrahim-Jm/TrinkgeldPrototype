@@ -14,8 +14,10 @@
         android:text="ON/OFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.212" />
 
     <TextView
         android:id="@+id/StateView"
@@ -24,9 +26,10 @@
         android:text="Bluetooth State"
         app:layout_constraintBottom_toTopOf="@+id/button"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.459"
         app:layout_constraintStart_toEndOf="@+id/bondState"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.498"
+        app:layout_constraintVertical_bias="0.278"
         tools:text="Bluetooth State" />
 
     <Button
@@ -37,9 +40,10 @@
         android:text="Enable Discoverable"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.32999998" />
+        app:layout_constraintVertical_bias="0.117" />
 
     <TextView
         android:id="@+id/discoverablty"
@@ -50,6 +54,7 @@
         app:layout_constraintEnd_toStartOf="@+id/bondState"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.278"
         tools:text="Discove State" />
 
     <Button
@@ -60,20 +65,22 @@
         android:text="Search Devices"
         app:layout_constraintBottom_toTopOf="@+id/IvNewDevices"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.88"
+        app:layout_constraintHorizontal_bias="0.849"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+        app:layout_constraintTop_toBottomOf="@+id/button"
+        app:layout_constraintVertical_bias="0.039" />
 
     <ListView
         android:id="@+id/IvNewDevices"
-        android:layout_width="409dp"
+        android:layout_width="410dp"
         android:layout_height="213dp"
         android:layout_below="@+id/btnFindUnpairedDevices"
+        android:layout_marginBottom="248dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
 
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/deviceView"
@@ -84,7 +91,7 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.206" />
+        app:layout_constraintVertical_bias="0.077" />
 
     <TextView
         android:id="@+id/bondState"
@@ -93,8 +100,10 @@
         android:text="BondState"
         app:layout_constraintBottom_toTopOf="@+id/button2"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/deviceView" />
+        app:layout_constraintTop_toBottomOf="@+id/deviceView"
+        app:layout_constraintVertical_bias="0.702" />
 
     <TextView
         android:id="@+id/bondState2"
@@ -103,8 +112,22 @@
         android:text="selectedDevice"
         app:layout_constraintBottom_toTopOf="@+id/bondState"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/deviceView" />
+        app:layout_constraintTop_toBottomOf="@+id/deviceView"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="262dp"
+        android:layout_height="51dp"
+        android:hint="Enter Text Here"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.107"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/IvNewDevices"
+        app:layout_constraintVertical_bias="0.502"></EditText>
 
     <Button
         android:id="@+id/btnPaired"
@@ -114,8 +137,19 @@
         android:text="Paired Devices"
         app:layout_constraintBottom_toTopOf="@+id/IvNewDevices"
         app:layout_constraintEnd_toEndOf="@+id/btnFindUnpairedDevices"
-        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintHorizontal_bias="0.068"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+        app:layout_constraintTop_toBottomOf="@+id/button"
+        app:layout_constraintVertical_bias="0.036" />
+
+    <Button
+        android:id="@+id/btnSend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/editText"
+        app:layout_constraintTop_toBottomOf="@+id/IvNewDevices" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
