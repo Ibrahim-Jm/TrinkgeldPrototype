@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
@@ -31,6 +32,8 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
+    TextView incomingMessages;
+    StringBuilder message;
     BluetoothAdapter myAdapter;
     private TextView mBluetoothStatus;
     private TextView discoverDisplay;
@@ -101,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     };
 
+
     private BroadcastReceiver mBroadcastReciver3=new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -136,6 +140,40 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
     };
+    private final BroadcastReceiver mReciver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String text = intent.getStringExtra("theMessage");
+
+            message.append(text+ "\n");
+            incomingMessages.setText(message);
+        }
+    };
+
+    //Check Connection Receiver
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                //Device found
+            }
+            else if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
+                //Device is now connected
+            }
+            else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                //Done searching
+            }
+            else if (BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED.equals(action)) {
+                //Device is about to disconnect
+            }
+            else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
+                //Device has disconnected
+            }
+        }
+    };
 
 
     @Override
@@ -164,12 +202,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         discoverDisplay = (TextView)findViewById(R.id.discoverablty);
         IvNewDevices.setOnItemClickListener(MainActivity.this);
 
+        incomingMessages = (TextView) findViewById(R.id.incomingMassages);
+        message = new StringBuilder();
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(mReciver, new IntentFilter("incomingMessage"));
+
         btnSend = (Button) findViewById(R.id.btnSend);
         etSend = (EditText) findViewById(R.id.editText);
 
-
+        //BroadcastReceiver to check Connection
+        IntentFilter filter2 = new IntentFilter();
+        filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
+        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
+        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+        this.registerReceiver(mReceiver, filter2);
         //discoverDisplay=(findViewById(R.id.textView2));
-        IntentFilter filter2 = new IntentFilter(myAdapter.ACTION_SCAN_MODE_CHANGED);
+        IntentFilter filter3 = new IntentFilter(myAdapter.ACTION_SCAN_MODE_CHANGED);
         registerReceiver(mBroadcastReciver2,filter2);
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
@@ -177,8 +225,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 byte[] bytes = etSend.getText().toString().getBytes(Charset.defaultCharset());
                 mBluetoothConnection.write(bytes);
+                etSend.setText("");
             }
         });
     }

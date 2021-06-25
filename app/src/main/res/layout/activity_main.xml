@@ -65,10 +65,10 @@
         android:text="Search Devices"
         app:layout_constraintBottom_toTopOf="@+id/IvNewDevices"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.849"
+        app:layout_constraintHorizontal_bias="0.936"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button"
-        app:layout_constraintVertical_bias="0.039" />
+        app:layout_constraintVertical_bias="0.413" />
 
     <ListView
         android:id="@+id/IvNewDevices"
@@ -126,8 +126,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.107"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/IvNewDevices"
-        app:layout_constraintVertical_bias="0.502"></EditText>
+        app:layout_constraintTop_toBottomOf="@+id/incomingMassages"></EditText>
 
     <Button
         android:id="@+id/btnPaired"
@@ -137,10 +136,10 @@
         android:text="Paired Devices"
         app:layout_constraintBottom_toTopOf="@+id/IvNewDevices"
         app:layout_constraintEnd_toEndOf="@+id/btnFindUnpairedDevices"
-        app:layout_constraintHorizontal_bias="0.068"
+        app:layout_constraintHorizontal_bias="0.062"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button"
-        app:layout_constraintVertical_bias="0.036" />
+        app:layout_constraintVertical_bias="0.413" />
 
     <Button
         android:id="@+id/btnSend"
@@ -149,7 +148,22 @@
         android:text="Send"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.644"
         app:layout_constraintStart_toEndOf="@+id/editText"
-        app:layout_constraintTop_toBottomOf="@+id/IvNewDevices" />
+        app:layout_constraintTop_toBottomOf="@+id/incomingMassages" />
+
+    <TextView
+        android:id="@+id/incomingMassages"
+        android:layout_width="fill_parent"
+        android:layout_height="100dp"
+        android:text="Incoming Massages"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/IvNewDevices"
+        app:layout_constraintVertical_bias="0.128" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
