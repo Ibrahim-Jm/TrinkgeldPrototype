@@ -227,7 +227,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             public void onClick(View v) {
 
                 byte[] bytes = etSend.getText().toString().getBytes(Charset.defaultCharset());
-                mBluetoothConnection.write(bytes);
+                try {
+                    mBluetoothConnection.write(bytes);
+                }catch (NullPointerException e){
+                    Toast.makeText(MainActivity.this,"Not Connected",Toast.LENGTH_SHORT).show();
+                }
+
+
                 etSend.setText("");
             }
         });
