@@ -1,6 +1,7 @@
 package com.example.trinkgeldprototype;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -27,11 +28,20 @@ import android.widget.Toast;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
 
+import androidx.appcompat.app.AppCompatActivity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
+    boolean isConnected=false;
     TextView incomingMessages;
     StringBuilder message;
     BluetoothAdapter myAdapter;
@@ -39,8 +49,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private TextView discoverDisplay;
     private TextView mBondStateView;
     private TextView mBondStateView2;
+    private TextView mConnectionState;
     Button btnSend;
-    ArrayList<BluetoothDevice> s = new ArrayList<>();
+
+    Set<BluetoothDevice> s;
+
     BluetoothConnectionService mBluetoothConnection;
     EditText etSend;
     private static final UUID MY_UUID_INSECURE = UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
@@ -140,6 +153,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
     };
+    private final BroadcastReceiver mBroadcastReciver5= new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action= intent.getAction();
+
+            if (action.equals(myAdapter.EXTRA_CONNECTION_STATE)){
+                BluetoothDevice mDevice =intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                if (mDevice.getBondState()==myAdapter.STATE_CONNECTING){
+                    mConnectionState.setText("Connecting");
+                }
+                if (mDevice.getBondState()==myAdapter.STATE_CONNECTED){
+                    mConnectionState.setText("Connected");
+                }
+            }
+        }
+    };
     private final BroadcastReceiver mReciver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -159,18 +189,25 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 //Device found
+                mConnectionState.setText("Device Found");
             }
             else if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
                 //Device is now connected
+                mConnectionState.setText("Connected");
+                isConnected=true;
             }
             else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 //Done searching
+                mConnectionState.setText("Done Searching");
             }
             else if (BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED.equals(action)) {
                 //Device is about to disconnect
+                mConnectionState.setText("about to Disconnected");
             }
             else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
                 //Device has disconnected
+                mConnectionState.setText("Disconnected");
+                isConnected=false;
             }
         }
     };
@@ -202,6 +239,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         discoverDisplay = (TextView)findViewById(R.id.discoverablty);
         IvNewDevices.setOnItemClickListener(MainActivity.this);
 
+        mConnectionState= findViewById(R.id.connectionState);
+
+        s=myAdapter.getBondedDevices();
         incomingMessages = (TextView) findViewById(R.id.incomingMassages);
         message = new StringBuilder();
 
@@ -232,11 +272,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }catch (NullPointerException e){
                     Toast.makeText(MainActivity.this,"Not Connected",Toast.LENGTH_SHORT).show();
                 }
-
-
                 etSend.setText("");
             }
         });
+    }
+
+    public void nextActivity(View v){
+        Intent intent=new Intent(this, Beginning.class);
+        startActivity(intent);
     }
 
     public void startConnection (BluetoothDevice device){
@@ -245,13 +288,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void startBTConnection(BluetoothDevice device, UUID uuid){
         mBondStateView.setText("Initializing RFCOM Connection");
-
         mBluetoothConnection.startClient(device,uuid);
-
     }
-
-
-
 
     public void btnDiscover(View v){
         if (!myAdapter.isEnabled()){
@@ -276,6 +314,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             registerReceiver(mBroadcastReciver3, discoverDevicesIntent);
         }
     }
+
     private void checkBTPermissions() {
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP){
             int permissionCheck = this.checkSelfPermission("Manifest.permission.ACCESS_FINE_LOCATION");
@@ -287,6 +326,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
     }
+
     public void checkPermission() {
         if (Build.VERSION.SDK_INT >= 23) {
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -298,6 +338,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
@@ -305,6 +346,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             checkPermission();
         }
     }
+
     public void bluetoothOnOff(View v){
         mBTDevices.clear();
         if (myAdapter==null){
@@ -327,6 +369,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         IntentFilter filter = new IntentFilter(myAdapter.ACTION_SCAN_MODE_CHANGED);
         registerReceiver(mBroadcastReciver2,filter);
     }
+
     public void enableDisableDiscover(View V){
         if (!myAdapter.isEnabled()){
             myAdapter.enable();
@@ -344,13 +387,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         IntentFilter filter = new IntentFilter(myAdapter.ACTION_SCAN_MODE_CHANGED);
         registerReceiver(mBroadcastReciver2,filter);
     }
+
     public void getPaired(View v){
-        Set<BluetoothDevice> pairedDevices = myAdapter.getBondedDevices();
-
-
-        for(BluetoothDevice bt : pairedDevices)
-            s.add(bt);
-        mDeviceListAdapter = new DeviceListAdapter(this, R.layout.device_adapter_view, s);
+        ArrayList<BluetoothDevice> pairedDevices = new ArrayList<>();
+        for (BluetoothDevice dv : s){
+            pairedDevices.add(dv);
+        }
+        mDeviceListAdapter = new DeviceListAdapter(this, R.layout.device_adapter_view, pairedDevices);
         IvNewDevices.setAdapter(mDeviceListAdapter);
     }
 
@@ -367,13 +410,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }else{
                 mBTDevices.get(position).createBond();
             }
-
             mBTDevice=mBTDevices.get(position);
             mBluetoothConnection = new BluetoothConnectionService(MainActivity.this);
             startConnection(mBTDevice);
         }
         IntentFilter filter = new IntentFilter(myAdapter.ACTION_SCAN_MODE_CHANGED);
         registerReceiver(mBroadcastReciver2,filter);
-
+        IntentFilter filter2 = new IntentFilter(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
+        registerReceiver(mBroadcastReciver5,filter2);
     }
 }
