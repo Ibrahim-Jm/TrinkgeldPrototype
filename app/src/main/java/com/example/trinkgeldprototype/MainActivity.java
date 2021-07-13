@@ -277,6 +277,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         });
     }
 
+    public void btnConnect(View v){
+        startConnection(mBTDevice);
+    }
+
     public void nextActivity(View v){
         Intent intent=new Intent(this, Beginning.class);
         startActivity(intent);
@@ -412,7 +416,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
             mBTDevice=mBTDevices.get(position);
             mBluetoothConnection = new BluetoothConnectionService(MainActivity.this);
-            startConnection(mBTDevice);
         }
         IntentFilter filter = new IntentFilter(myAdapter.ACTION_SCAN_MODE_CHANGED);
         registerReceiver(mBroadcastReciver2,filter);
