@@ -17,6 +17,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     BluetoothConnectionService mBluetoothConnection;
     EditText etSend;
-    private static final UUID MY_UUID_INSECURE = UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
+    private static final UUID MY_UUID_INSECURE = UUID.fromString("08001101-0000-1000-8000-00805F9B34FB");
     BluetoothDevice mBTDevice;
 
 
@@ -173,8 +174,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private final BroadcastReceiver mReciver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String text = intent.getStringExtra("theMessage");
-
+            String text = intent.getStringExtra("the Message");
+            if (intent.getStringExtra("the Message")==null){
+                Log.d("mainactivity", "nothing came in");
+            }
             message.append(text+ "\n");
             incomingMessages.setText(message);
         }
@@ -245,7 +248,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         incomingMessages = (TextView) findViewById(R.id.incomingMassages);
         message = new StringBuilder();
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(mReciver, new IntentFilter("incomingMessage"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mReciver, new IntentFilter("incomingMessages"));
 
         btnSend = (Button) findViewById(R.id.btnSend);
         etSend = (EditText) findViewById(R.id.editText);
