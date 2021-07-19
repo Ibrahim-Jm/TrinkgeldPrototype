@@ -18,7 +18,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TrinkgeldPrototype">
         <activity android:name=".MainActivity" android:label="Bluetooth Connection" ></activity>
-        <activity android:name=".Beginning" android:label="Bluetooth Connection" android:parentActivityName=".MainActivity"></activity>
         <activity android:name=".RealMain">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

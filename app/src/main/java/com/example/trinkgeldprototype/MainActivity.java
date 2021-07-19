@@ -1,8 +1,8 @@
 package com.example.trinkgeldprototype;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -29,20 +29,15 @@ import android.widget.Toast;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
 
-import androidx.appcompat.app.AppCompatActivity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.EditText;
-
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
-    boolean isConnected=false;
+    ConstraintLayout mainLayout;
+    ConstraintLayout secondLayout;
+    ConstraintLayout thirdLayout;
+
     TextView incomingMessages;
     StringBuilder message;
     BluetoothAdapter myAdapter;
@@ -167,6 +162,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
                 if (mDevice.getBondState()==myAdapter.STATE_CONNECTED){
                     mConnectionState.setText("Connected");
+                    Toast.makeText(MainActivity.this,"Connected Successfully",Toast.LENGTH_SHORT).show();
+                    startSecondLayout();
                 }
             }
         }
@@ -197,7 +194,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             else if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
                 //Device is now connected
                 mConnectionState.setText("Connected");
-                isConnected=true;
+                startSecondLayout();
+
+
             }
             else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 //Done searching
@@ -210,7 +209,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
                 //Device has disconnected
                 mConnectionState.setText("Disconnected");
-                isConnected=false;
+                startConnectionLayout();
+
             }
         }
     };
@@ -230,6 +230,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
+        mainLayout=findViewById(R.id.mainLayout);
+        secondLayout=findViewById(R.id.FirstFragment);
+        thirdLayout=findViewById(R.id.tipp);
+
         IntentFilter filter=new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         registerReceiver(mBroadcastReciver4,filter);
         mBondStateView = (TextView) findViewById(R.id.bondState);
@@ -244,6 +250,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         mConnectionState= findViewById(R.id.connectionState);
 
+        try {
+            s=myAdapter.getBondedDevices();
+        }catch (NullPointerException i){
+            s=null;
+        }
         s=myAdapter.getBondedDevices();
         incomingMessages = (TextView) findViewById(R.id.incomingMassages);
         message = new StringBuilder();
@@ -255,9 +266,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         //BroadcastReceiver to check Connection
         IntentFilter filter2 = new IntentFilter();
-        filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
-        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
-        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+        filter2.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
+        filter2.addAction(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
+        filter2.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
         this.registerReceiver(mReceiver, filter2);
         //discoverDisplay=(findViewById(R.id.textView2));
         IntentFilter filter3 = new IntentFilter(myAdapter.ACTION_SCAN_MODE_CHANGED);
@@ -279,18 +290,32 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
     }
+    public void startConnectionLayout(){
+        mainLayout.setVisibility(mainLayout.VISIBLE);
+        secondLayout.setVisibility(secondLayout.GONE);
+        thirdLayout.setVisibility(thirdLayout.GONE);
+    }
+
+    public void startSecondLayout(){
+        secondLayout.setVisibility(secondLayout.VISIBLE);
+        mainLayout.setVisibility(mainLayout.GONE);
+        thirdLayout.setVisibility(thirdLayout.GONE);
+    }
+    public void startThirdLayout(){
+        secondLayout.setVisibility(secondLayout.GONE);
+        mainLayout.setVisibility(mainLayout.GONE);
+        thirdLayout.setVisibility(thirdLayout.VISIBLE);
+    }
 
     public void btnConnect(View v){
         startConnection(mBTDevice);
     }
 
-    public void nextActivity(View v){
-        Intent intent=new Intent(this, Beginning.class);
-        startActivity(intent);
-    }
+
 
     public void startConnection (BluetoothDevice device){
         startBTConnection(device,MY_UUID_INSECURE);
+
     }
 
     public void startBTConnection(BluetoothDevice device, UUID uuid){
@@ -324,12 +349,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void checkBTPermissions() {
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP){
-            int permissionCheck = this.checkSelfPermission("Manifest.permission.ACCESS_FINE_LOCATION");
-            permissionCheck += this.checkSelfPermission("Manifest.permission.ACCESS_COARSE_LOCATION");
-            permissionCheck += this.checkSelfPermission("Manifest.permission.ACCESS_BACKGROUND_LOCATION");
+            int permissionCheck = 0;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                permissionCheck = this.checkSelfPermission("Manifest.permission.ACCESS_FINE_LOCATION");
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                permissionCheck += this.checkSelfPermission("Manifest.permission.ACCESS_COARSE_LOCATION");
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                permissionCheck += this.checkSelfPermission("Manifest.permission.ACCESS_BACKGROUND_LOCATION");
+            }
             if (permissionCheck != 0) {
 
-                this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION}, 1001); //Any number
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION}, 1001); //Any number
+                }
             }
         }
     }
