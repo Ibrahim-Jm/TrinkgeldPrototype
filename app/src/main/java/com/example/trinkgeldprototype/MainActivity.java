@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -38,8 +39,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     ConstraintLayout secondLayout;
     ConstraintLayout thirdLayout;
 
-    TextView incomingMessages;
+
+    ListView log;
     StringBuilder message;
+    String message2;
+    ArrayList<String> messages= new ArrayList<>();
+    ArrayAdapter<String> arrayAdapter;
     BluetoothAdapter myAdapter;
     private TextView mBluetoothStatus;
     private TextView discoverDisplay;
@@ -173,10 +178,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         public void onReceive(Context context, Intent intent) {
             String text = intent.getStringExtra("the Message");
             if (intent.getStringExtra("the Message")==null){
-                Log.d("mainactivity", "nothing came in");
+                Log.d("MainActivity", "nothing came in");
             }
-            message.append(text+ "\n");
-            incomingMessages.setText(message);
+
+            message2=("Received: "+text+ "\n");
+            messages.add(message2.toString());
+            log.setAdapter(arrayAdapter);
         }
     };
 
@@ -209,6 +216,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
                 //Device has disconnected
                 mConnectionState.setText("Disconnected");
+                reSetConnectionVar();
                 startConnectionLayout();
 
             }
@@ -248,21 +256,24 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         discoverDisplay = (TextView)findViewById(R.id.discoverablty);
         IvNewDevices.setOnItemClickListener(MainActivity.this);
 
+        log = (ListView) findViewById(R.id.incomingMassages);
         mConnectionState= findViewById(R.id.connectionState);
-
+        arrayAdapter= new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, messages );
+        log.setAdapter(arrayAdapter);
         try {
             s=myAdapter.getBondedDevices();
         }catch (NullPointerException i){
             s=null;
         }
         s=myAdapter.getBondedDevices();
-        incomingMessages = (TextView) findViewById(R.id.incomingMassages);
+
         message = new StringBuilder();
+        messages.add("Start of Log");
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mReciver, new IntentFilter("incomingMessages"));
 
         btnSend = (Button) findViewById(R.id.btnSend);
-        etSend = (EditText) findViewById(R.id.editText);
+
 
         //BroadcastReceiver to check Connection
         IntentFilter filter2 = new IntentFilter();
@@ -275,21 +286,32 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         registerReceiver(mBroadcastReciver2,filter2);
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-
+        startConnectionLayout();
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                byte[] bytes = etSend.getText().toString().getBytes(Charset.defaultCharset());
+                String text="Restart pls";
+                byte[] bytes = text.getBytes(Charset.defaultCharset());
                 try {
                     mBluetoothConnection.write(bytes);
+                    String text1="restart";
+
+                    message2=("Sent: "+text1+ "\n");
+                    messages.add(message2.toString());
                 }catch (NullPointerException e){
                     Toast.makeText(MainActivity.this,"Not Connected",Toast.LENGTH_SHORT).show();
                 }
-                etSend.setText("");
+
             }
         });
     }
+
+    public void reSetConnectionVar(){
+        mBluetoothConnection=null;
+        mBondStateView.setText("");
+
+    }
+
     public void startConnectionLayout(){
         mainLayout.setVisibility(mainLayout.VISIBLE);
         secondLayout.setVisibility(secondLayout.GONE);
@@ -308,7 +330,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void btnConnect(View v){
-        startConnection(mBTDevice);
+        try {
+            startConnection(mBTDevice);
+        }catch (NullPointerException i){
+            Toast.makeText(MainActivity.this,"Choose a Device First",Toast.LENGTH_SHORT).show();
+        }
     }
 
 
@@ -331,7 +357,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             registerReceiver(mBroadcastReciver, BTintent);
             Toast.makeText(MainActivity.this,"Enabled",Toast.LENGTH_SHORT).show();
         }
-        mBTDevices.clear();
+        try {
+            mBTDevices.clear();
+        }catch (NullPointerException f){}
         if (myAdapter.isDiscovering()){
             myAdapter.cancelDiscovery();
             checkPermission();
@@ -382,9 +410,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+        try{if (requestCode == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
         } else {
             checkPermission();
+        }}catch (RuntimeException i){
+
         }
     }
 
@@ -441,7 +471,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        myAdapter.cancelDiscovery();
+        try {
+            myAdapter.cancelDiscovery();
+        }catch (NullPointerException i){}
         String deviceName=mBTDevices.get(position).getName();
         String deviceAddress=mBTDevices.get(position).getAddress();
         if (Build.VERSION.SDK_INT>Build.VERSION_CODES.JELLY_BEAN_MR2){
