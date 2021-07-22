@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -89,7 +90,7 @@ public class BluetoothConnectionService {
                 try{
                     socket = mmServerSocket.accept();
                 }catch (NullPointerException i){ }
-                socket = mmServerSocket.accept();
+
 
                 Log.d(TAG, "run: RFCOM server socket accepted connection.");
 
@@ -141,7 +142,12 @@ public class BluetoothConnectionService {
             try {
                 Log.d(TAG, "ConnectThread: Trying to create InsecureRfcommSocket using UUID: "
                         +MY_UUID_INSECURE );
-                tmp = mmDevice.createRfcommSocketToServiceRecord(deviceUUID);
+                try{
+                    tmp = mmDevice.createRfcommSocketToServiceRecord(deviceUUID);
+                }catch (NullPointerException i){
+                    //Toast.makeText(MainActivity.this,"Please Choose a device first",Toast.LENGTH_SHORT).show();
+                }
+
             } catch (IOException e) {
                 Log.e(TAG, "ConnectThread: Could not create InsecureRfcommSocket " + e.getMessage());
             }
@@ -156,7 +162,12 @@ public class BluetoothConnectionService {
             try {
                 // This is a blocking call and will only return on a
                 // successful connection or an exception
-                mmSocket.connect();
+                try {
+                    mmSocket.connect();
+                }catch (NullPointerException e){
+
+                }
+
 
                 Log.d(TAG, "run: ConnectThread connected.");
             } catch (IOException e) {
@@ -244,6 +255,12 @@ public class BluetoothConnectionService {
 
 
             try {
+                try {
+                    tmpIn = mmSocket.getInputStream();
+                    tmpOut = mmSocket.getOutputStream();
+                }catch (NullPointerException e){
+
+                }
                 tmpIn = mmSocket.getInputStream();
                 tmpOut = mmSocket.getOutputStream();
             } catch (IOException e) {
@@ -301,8 +318,13 @@ public class BluetoothConnectionService {
         Log.d(TAG, "connected: Starting.");
 
         // Start the thread to manage the connection and perform transmissions
-        mConnectedThread = new ConnectedThread(mmSocket);
-        mConnectedThread.start();
+        try {
+            mConnectedThread = new ConnectedThread(mmSocket);
+            mConnectedThread.start();
+        }catch (NullPointerException e){
+
+        }
+
     }
 
     /**

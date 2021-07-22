@@ -183,6 +183,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             message2=("Received: "+text+ "\n");
             messages.add(message2.toString());
+            if (messages.size()==10){
+                messages.remove(0);
+            }
             log.setAdapter(arrayAdapter);
         }
     };
@@ -298,6 +301,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                     message2=("Sent: "+text1+ "\n");
                     messages.add(message2.toString());
+                    if (messages.size()==10){
+                        messages.remove(0);
+                    }
+                    log.setAdapter(arrayAdapter);
                 }catch (NullPointerException e){
                     Toast.makeText(MainActivity.this,"Not Connected",Toast.LENGTH_SHORT).show();
                 }
