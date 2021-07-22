@@ -86,6 +86,9 @@ public class BluetoothConnectionService {
                 // successful connection or an exception
                 Log.d(TAG, "run: RFCOM server socket start.....");
 
+                try{
+                    socket = mmServerSocket.accept();
+                }catch (NullPointerException i){ }
                 socket = mmServerSocket.accept();
 
                 Log.d(TAG, "run: RFCOM server socket accepted connection.");
