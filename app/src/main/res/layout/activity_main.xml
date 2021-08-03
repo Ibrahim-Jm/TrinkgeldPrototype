@@ -7,174 +7,161 @@
     tools:context=".MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/tipp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/mainLayout"
         android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="visible">
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="bluetoothOnOff"
-            android:text="ON/OFF"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.212" />
 
-        <TextView
-            android:id="@+id/StateView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Bluetooth State"
-            app:layout_constraintBottom_toTopOf="@+id/button"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout2"
+            android:layout_width="169dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/IvNewDevices"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.459"
-            app:layout_constraintStart_toEndOf="@+id/bondState"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.278"
-            tools:text="Bluetooth State" />
+            app:layout_constraintStart_toEndOf="@+id/button"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/StateView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="bluetooth_state"
+                app:layout_constraintBottom_toTopOf="@+id/bondState2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Bluetooth State" />
+
+            <TextView
+                android:id="@+id/bondState2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="selecteddevice"
+                app:layout_constraintBottom_toTopOf="@+id/discoverablty"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/StateView" />
+
+            <TextView
+                android:id="@+id/discoverablty"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="discove_state"
+                app:layout_constraintBottom_toTopOf="@+id/connectionState"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bondState2"
+                tools:text="Discover State" />
+
+            <TextView
+                android:id="@+id/connectionState"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="textview"
+                app:layout_constraintBottom_toTopOf="@+id/bondState"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/discoverablty" />
+
+            <TextView
+                android:id="@+id/bondState"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="bondstate"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/connectionState" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <Button
             android:id="@+id/button2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:onClick="enableDisableDiscover"
-            android:text="Enable Discoverable"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.117" />
-
-        <TextView
-            android:id="@+id/discoverablty"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:text="Discove State"
+            android:text="enable_discoverable"
             app:layout_constraintBottom_toTopOf="@+id/button"
-            app:layout_constraintEnd_toStartOf="@+id/bondState"
+            app:layout_constraintEnd_toStartOf="@+id/constraintLayout2"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.278"
-            tools:text="Discover State" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/btnFindUnpairedDevices"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:onClick="btnDiscover"
-            android:text="Search Devices"
-            app:layout_constraintBottom_toTopOf="@+id/IvNewDevices"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.936"
+            android:text="search_devices"
+            app:layout_constraintBottom_toTopOf="@+id/btnPaired"
+            app:layout_constraintEnd_toStartOf="@+id/constraintLayout2"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button"
-            app:layout_constraintVertical_bias="0.413" />
+            app:layout_constraintTop_toBottomOf="@+id/button" />
+
 
         <ListView
             android:id="@+id/IvNewDevices"
             android:layout_width="match_parent"
-            android:layout_height="213dp"
+            android:layout_height="0dp"
             android:layout_below="@+id/btnFindUnpairedDevices"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginBottom="248dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="20dp"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-
-            />
-
-        <TextView
-            android:id="@+id/deviceView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@+id/button2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintHorizontal_bias="0.425"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.077" />
-
-        <TextView
-            android:id="@+id/bondState"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="BondState"
-            app:layout_constraintBottom_toTopOf="@+id/button2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/deviceView"
-            app:layout_constraintVertical_bias="0.702" />
-
-        <TextView
-            android:id="@+id/bondState2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="selectedDevice"
-            app:layout_constraintBottom_toTopOf="@+id/bondState"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/deviceView"
-            app:layout_constraintVertical_bias="0.0" />
-
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
 
         <Button
             android:id="@+id/btnPaired"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="32dp"
             android:onClick="getPaired"
-            android:text="Paired Devices"
+            android:text="paired_devices"
             app:layout_constraintBottom_toTopOf="@+id/IvNewDevices"
-            app:layout_constraintEnd_toEndOf="@+id/btnFindUnpairedDevices"
-            app:layout_constraintHorizontal_bias="0.062"
+            app:layout_constraintEnd_toStartOf="@+id/constraintLayout2"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button"
-            app:layout_constraintVertical_bias="0.413" />
-
-
-        <TextView
-            android:id="@+id/connectionState"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TextView"
-            app:layout_constraintBottom_toTopOf="@+id/btnPaired"
-            app:layout_constraintEnd_toStartOf="@+id/button"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button2" />
+            app:layout_constraintTop_toBottomOf="@+id/btnFindUnpairedDevices" />
 
         <Button
             android:id="@+id/button4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="btnConnect"
-            android:text="Connect"
+            android:text="connect"
             app:layout_constraintBottom_toTopOf="@+id/btnFindUnpairedDevices"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/button"
+            app:layout_constraintEnd_toStartOf="@+id/button"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button2" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:onClick="bluetoothOnOff"
+            android:text="on_off"
+            app:layout_constraintBottom_toTopOf="@+id/btnFindUnpairedDevices"
+            app:layout_constraintEnd_toStartOf="@+id/constraintLayout2"
+            app:layout_constraintStart_toEndOf="@+id/button4"
             app:layout_constraintTop_toBottomOf="@+id/button2" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/FirstFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 

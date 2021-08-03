@@ -245,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         mainLayout=findViewById(R.id.mainLayout);
         secondLayout=findViewById(R.id.FirstFragment);
-        thirdLayout=findViewById(R.id.tipp);
+
 
         IntentFilter filter=new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         registerReceiver(mBroadcastReciver4,filter);
@@ -253,7 +253,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mBondStateView2 = (TextView) findViewById(R.id.bondState2);
         myAdapter=BluetoothAdapter.getDefaultAdapter();
         IvNewDevices =(ListView) findViewById(R.id.IvNewDevices);
-        deviceView =(TextView) findViewById(R.id.deviceView);
         mBTDevices = new ArrayList<>();
         mBluetoothStatus = (TextView)findViewById(R.id.StateView);
         discoverDisplay = (TextView)findViewById(R.id.discoverablty);
@@ -322,19 +321,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void startConnectionLayout(){
         mainLayout.setVisibility(mainLayout.VISIBLE);
         secondLayout.setVisibility(secondLayout.GONE);
-        thirdLayout.setVisibility(thirdLayout.GONE);
     }
 
     public void startSecondLayout(){
         secondLayout.setVisibility(secondLayout.VISIBLE);
         mainLayout.setVisibility(mainLayout.GONE);
-        thirdLayout.setVisibility(thirdLayout.GONE);
     }
-    public void startThirdLayout(){
-        secondLayout.setVisibility(secondLayout.GONE);
-        mainLayout.setVisibility(mainLayout.GONE);
-        thirdLayout.setVisibility(thirdLayout.VISIBLE);
-    }
+
 
     public void btnConnect(View v){
         try {
