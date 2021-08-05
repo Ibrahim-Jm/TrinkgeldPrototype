@@ -127,7 +127,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                     if (!(device.getName()==null)){
                     mBTDevices.add(device);}
-                    deviceView.setText("" + device.getName()+ ": " + device.getAddress());
 
                     mDeviceListAdapter = new DeviceListAdapter(context, R.layout.device_adapter_view, mBTDevices);
                     IvNewDevices.setAdapter(mDeviceListAdapter);
@@ -350,6 +349,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void btnDiscover(View v){
+        ArrayList<BluetoothDevice> emptyList = new ArrayList<>();
+        mDeviceListAdapter = new DeviceListAdapter(this, R.layout.device_adapter_view, emptyList);
+        IvNewDevices.setAdapter(mDeviceListAdapter);
         if (!myAdapter.isEnabled()){
             myAdapter.enable();
 
@@ -461,9 +463,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void getPaired(View v){
         ArrayList<BluetoothDevice> pairedDevices = new ArrayList<>();
+        mDeviceListAdapter = new DeviceListAdapter(this, R.layout.device_adapter_view, pairedDevices);
+        IvNewDevices.setAdapter(mDeviceListAdapter);
         for (BluetoothDevice dv : s){
             pairedDevices.add(dv);
         }
+        mBTDevices.clear();
+        mBTDevices=pairedDevices;
         mDeviceListAdapter = new DeviceListAdapter(this, R.layout.device_adapter_view, pairedDevices);
         IvNewDevices.setAdapter(mDeviceListAdapter);
     }
