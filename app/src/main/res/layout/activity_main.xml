@@ -10,14 +10,14 @@
         android:id="@+id/mainLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
+        android:visibility="visible">
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout2"
             android:layout_width="169dp"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/IvNewDevices"
+            app:layout_constraintBottom_toTopOf="@+id/IvNewDevices2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/button"
             app:layout_constraintTop_toTopOf="parent">
@@ -26,6 +26,7 @@
                 android:id="@+id/StateView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="bluetooth_state"
                 app:layout_constraintBottom_toTopOf="@+id/bondState2"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -37,6 +38,7 @@
                 android:id="@+id/bondState2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="selecteddevice"
                 app:layout_constraintBottom_toTopOf="@+id/discoverablty"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -47,6 +49,7 @@
                 android:id="@+id/discoverablty"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="discove_state"
                 app:layout_constraintBottom_toTopOf="@+id/connectionState"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -58,6 +61,7 @@
                 android:id="@+id/connectionState"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="textview"
                 app:layout_constraintBottom_toTopOf="@+id/bondState"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -67,9 +71,10 @@
             <TextView
                 android:id="@+id/bondState"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
                 android:maxWidth="0dp"
                 android:minWidth="100dp"
-                android:layout_height="wrap_content"
                 android:text="bondstate"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -103,20 +108,35 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/button" />
 
-
-        <ListView
-            android:id="@+id/IvNewDevices"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/IvNewDevices2"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_below="@+id/btnFindUnpairedDevices"
             android:layout_marginHorizontal="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginRight="20dp"
             android:layout_marginBottom="20dp"
-
+            android:background="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.425"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
+
+            <ListView
+                android:id="@+id/IvNewDevices"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:layout_margin="2dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <Button
             android:id="@+id/btnPaired"
@@ -126,7 +146,7 @@
             android:layout_marginBottom="32dp"
             android:onClick="getPaired"
             android:text="paired_devices"
-            app:layout_constraintBottom_toTopOf="@+id/IvNewDevices"
+            app:layout_constraintBottom_toTopOf="@+id/IvNewDevices2"
             app:layout_constraintEnd_toStartOf="@+id/constraintLayout2"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -163,7 +183,7 @@
         android:id="@+id/FirstFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -172,25 +192,45 @@
             android:id="@+id/btnSend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:text="Reset Other Device"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/incomingMassages"
-            />
 
-        <ListView
-            android:id="@+id/incomingMassages"
-            android:layout_width="390dp"
-            android:layout_height="536dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+            android:layout_marginBottom="40dp"
+            android:text="Reset Other Device"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.476"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/LogContainer" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/LogContainer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="40dp"
+
+
+            android:background="#040303"
+            app:layout_constraintBottom_toTopOf="@+id/btnSend"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.235" />
+            app:layout_constraintVertical_bias="0.235">
+
+            <ListView
+                android:id="@+id/incomingMassages"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="2dp"
+                android:background="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

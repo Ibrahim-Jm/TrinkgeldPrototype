@@ -2,6 +2,7 @@ package com.example.trinkgeldprototype;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -15,8 +16,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -37,9 +42,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     ConstraintLayout mainLayout;
     ConstraintLayout secondLayout;
-    ConstraintLayout thirdLayout;
-
-
     ListView log;
     StringBuilder message;
     String message2;
@@ -56,7 +58,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     Set<BluetoothDevice> s;
 
     BluetoothConnectionService mBluetoothConnection;
-    EditText etSend;
     private static final UUID MY_UUID_INSECURE = UUID.fromString("08001101-0000-1000-8000-00805F9B34FB");
     BluetoothDevice mBTDevice;
 
@@ -64,7 +65,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
     public DeviceListAdapter mDeviceListAdapter;
     ListView IvNewDevices;
-    TextView deviceView;
 
 
     private final BroadcastReceiver mBroadcastReciver = new BroadcastReceiver() {
@@ -126,7 +126,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if (action.equals(BluetoothDevice.ACTION_FOUND)){
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                     if (!(device.getName()==null)){
-                    mBTDevices.add(device);}
+                    if(!mBTDevices.contains(device)){
+                        mBTDevices.add(device);
+                    }
+                    }
 
                     mDeviceListAdapter = new DeviceListAdapter(context, R.layout.device_adapter_view, mBTDevices);
                     IvNewDevices.setAdapter(mDeviceListAdapter);
@@ -237,19 +240,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
         mainLayout=findViewById(R.id.mainLayout);
         secondLayout=findViewById(R.id.FirstFragment);
-
-
         IntentFilter filter=new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         registerReceiver(mBroadcastReciver4,filter);
         mBondStateView = (TextView) findViewById(R.id.bondState);
         mBondStateView2 = (TextView) findViewById(R.id.bondState2);
+
         myAdapter=BluetoothAdapter.getDefaultAdapter();
         IvNewDevices =(ListView) findViewById(R.id.IvNewDevices);
         mBTDevices = new ArrayList<>();
@@ -305,6 +306,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     log.setAdapter(arrayAdapter);
                 }catch (NullPointerException e){
                     Toast.makeText(MainActivity.this,"Not Connected",Toast.LENGTH_SHORT).show();
+                    mConnectionState.setText("Disconnected");
+                    reSetConnectionVar();
+                    startConnectionLayout();
                 }
 
             }
@@ -486,6 +490,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             mBondStateView2.setText("Bonding to "+deviceName+": "+deviceAddress);
             if (s.contains(mBTDevices.get(position))){
                 mBondStateView2.setText("Already Bonded");
+                Toast.makeText(MainActivity.this,"Already Bonded",Toast.LENGTH_SHORT).show();
             }else{
                 mBTDevices.get(position).createBond();
             }
